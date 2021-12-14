@@ -1,0 +1,36 @@
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
+from . import views
+
+app_name = 'visualization'
+urlpatterns = [
+	path('', views.visualization, name='visualization'),
+        path('to', views.visualization_to, name='visualization_to'),
+        path('2', views.visualization_2, name='visualization_2'),
+        path('3', views.visualization_3, name='visualization_3'),
+        path('4', views.visualization_4, name='visualization_4'),
+	path('clustering', views.visualization_clustering, name='visualization_clustering'),
+	path('raw_data', views.visualization_raw_data, name='visualization_raw_data'),
+	path('background', views.visualization_background, name='visualization_background'),
+	path('remove_bg_data', views.visualization_remove_bg_data, name='visualization_remove_bg_data'),
+        path('remove_bg_data_to', views.visualization_remove_bg_data_to, name='visualization_remove_bg_data_to'),
+	path('noise_filtering_data', views.visualization_noise_filtering_data, name='visualization_noise_filtering_data'),
+
+        path('p5js',                      views.p5js_visualization,                      name='p5js_visualization'),
+        path('p5js/clustering',           views.p5js_visualization_clustering,           name='p5js_visualization_clustering'),
+        path('p5js/raw_data',             views.p5js_visualization_raw_data,             name='p5js_visualization_raw_data'),
+        path('p5js/background',           views.p5js_visualization_background,           name='p5js_visualization_background'),
+        path('p5js/remove_bg_data',       views.p5js_visualization_remove_bg_data,       name='p5js_visualization_remove_bg_data'),
+        path('p5js/noise_filtering_data', views.p5js_visualization_noise_filtering_data, name='p5js_visualization_noise_filtering_data'),
+
+        path('pixi',                      views.pixi_visualization,                      name='pixi_visualization'),
+        path('pixi/clustering',           views.pixi_visualization_clustering,           name='pixi_visualization_clustering'),
+        path('pixi/raw_data',             views.pixi_visualization_raw_data,             name='pixi_visualization_raw_data'),
+        path('pixi/background',           views.pixi_visualization_background,           name='pixi_visualization_background'),
+        path('pixi/remove_bg_data',       views.pixi_visualization_remove_bg_data,       name='pixi_visualization_remove_bg_data'),
+        path('pixi/noise_filtering_data', views.pixi_visualization_noise_filtering_data, name='pixi_visualization_noise_filtering_data'),
+
+	path('test/raw_data', 		  views.test_raw_data,				 name='test_raw_data'),
+	] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,13 @@
+.canvas-container { 
+  display: flex;
+  margin: 0px;
+}
+
+body {
+  margin: 0px;
+  overflow: hidden;
+}
+
+h2 {
+  margin: 10px;
+}

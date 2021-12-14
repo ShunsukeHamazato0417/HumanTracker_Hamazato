@@ -1,0 +1,101 @@
+num_of_sensors: 9
+
+sensor-1:
+  use       : ether 
+  ip        : 172.16.1.11
+  port      : 10940
+  min_deg   : -135
+  max_deg   : 135
+  x         : 66100
+  y         : 10920
+  direction : 89.1
+  max_dist  : 20
+
+sensor-2:
+  use       : ether
+  ip        : 172.16.1.12
+  port      : 10940
+  min_deg   : -135
+  max_deg   : 135
+  x         : 64720
+  y         : 6980
+  direction : 179.6
+  max_dist  : 20
+
+sensor-3:
+  use       : ether
+  ip        : 172.16.1.13
+  port      : 10940
+  min_deg   : -135
+  max_deg   : 135
+  x         : 51800
+  y         : 16680
+  direction : -90.5
+  max_dist  : 20
+
+sensor-4:
+  use       : ether
+  ip        : 172.16.1.14
+  port      : 10940
+  min_deg   : -135
+  max_deg   : 135
+  x         : 43600
+  y         : 11280
+  direction : 89.3
+  max_dist  : 20
+
+sensor-5:
+  use       : ether
+  ip        : 172.16.1.15
+  port      : 10940
+  min_deg   : -135
+  max_deg   : 135
+  x         : 35120
+  y         : 16880
+  direction : -90.9
+  max_dist  : 20
+
+sensor-6:
+  use       : ether
+  ip        : 172.16.1.16
+  port      : 10940
+  min_deg   : -95
+  max_deg   : 95
+  x         : 52120
+  y         : 23680
+  direction : 0.4
+  max_dist  : 30
+
+sensor-7:
+  use       : ether
+  ip        : 172.16.1.17
+  port      : 10940
+  min_deg   : -95
+  max_deg   : 95
+  x         : 51660
+  y         : 37060
+  direction : 91.4
+  max_dist  : 30
+
+sensor-8:
+  use       : ether
+  ip        : 172.16.1.18
+  port      : 10940
+  min_deg   : -95
+  max_deg   : 95
+  x         : 27880
+  y         : 37060
+  direction : 87.6
+  max_dist  : 30
+
+sensor-9:
+  use       : ether
+  ip        : 172.16.1.19
+  port      : 10940
+  min_deg   : -95
+  max_deg   : 95
+  x         : 27380
+  y         : 10260
+  direction : 180
+  max_dist  : 30
+

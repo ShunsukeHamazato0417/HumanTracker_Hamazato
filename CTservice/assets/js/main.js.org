@@ -1,0 +1,249 @@
+'use strict';
+if (!window.Worker){
+  console.log("You cannot use WebWorker in this browser.");
+  console.log("Please use browser that supported WebWorker.")
+  //exit 
+}
+
+
+import * as PIXI from 'pixi.js';
+
+
+/* ----- 前処理 ----- */
+var ty = getParam('ty')
+
+function getParam(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+/*########################
+
+##### 描画範囲の設定 ##### 
+########################*/
+/* ----- windowの大きさ取得-----*/
+let window_w = window.innerWidth;
+let window_h = window.innerHeight-60; 
+
+
+/* ----- 描画領域の定義 -----*/
+let app_aspect_ratio = [4, 3];     // 可視化canvas(app)の縦横比
+let app_info_ratio   = [3, 1];     // appと情報canvas(info)の幅比
+
+// app, infoの大きさ定義
+let app_w, app_h, info_w, info_h;  
+app_w  = window_w * (app_info_ratio[0]/(app_info_ratio[0]+app_info_ratio[1]));
+info_h = window_h;
+app_h  = window_h;
+if (app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]) > app_h){
+  app_w = app_h * (app_aspect_ratio[0]/app_aspect_ratio[1]);
+} else {
+  app_h = app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]);
+}
+info_w = window_w - app_w;
+
+// app, infoの定義
+let app = new PIXI.Application({
+  width  : app_w,
+  height : app_h,
+  backgroundColor: 0xffffff
+});
+let info = new PIXI.Application({
+  width  : info_w,
+  height : info_h,
+  backgroundColor : 0xcccccc
+});
+let container = document.getElementsByClassName('canvas');
+let app_canvas   = container[0];
+let info_canvas  = container[1];
+app_canvas.appendChild(app.view);
+info_canvas.appendChild(info.view);
+
+// レイヤー定義
+//app.stage.addChild(new )
+
+// appの背景描画
+let background = new PIXI.Container();
+let contour = new PIXI.Graphics()
+  .lineStyle(2, 0x000000, 1)
+  .moveTo(0, 0)
+  .lineTo(app_w, 0).lineTo(app_w, app_h)
+  .lineTo(0, app_h).lineTo(0, 0);
+background.addChild(contour);
+let grid = new PIXI.Graphics()
+  .lineStyle(1, 0x000000, 1)
+  .moveTo(0, app_h/2).lineTo(app_w, app_h/2)
+  .moveTo(app_w/2, 0).lineTo(app_w/2, app_h);
+background.addChild(grid);
+app.stage.addChild(background);
+
+
+
+/*########################
+######## 描画処理 ######## 
+########################*/
+// Worker定義 
+const worker = new Worker(new URL('./worker.js', import.meta.url));
+worker.postMessage({
+	ty: ty
+})
+
+// 検証用変数
+let pre_get_time = new Date();
+let now, time, lag, fps, start, drawing, wait;
+let lag_display = new PIXI.Text('',
+  {fontFamily : 'Arial',
+   fontSize : 15,
+   fill : 0x000000,
+   align : 'center'});
+lag_display.x = 20;
+lag_display.y = 70;
+info.stage.addChild(lag_display);
+let fps_display = new PIXI.Text('',
+  {fontFamily : 'Arial',
+   fontSize : 15,
+   fill : 0x000000,
+   align : 'center'});
+fps_display.x = 200;
+fps_display.y = 70;
+info.stage.addChild(fps_display);
+let drawing_display = new PIXI.Text('',
+  {fontFamily : 'Arial',
+   fontSize : 15,
+   fill : 0x000000,
+   align : 'center'});
+drawing_display.x = 20;
+drawing_display.y = 100;
+info.stage.addChild(drawing_display);
+let wait_display = new PIXI.Text('',
+  {fontFamily : 'Arial',
+   fontSize : 15,
+   fill : 0x000000,
+   align : 'center'});
+wait_display.x = 200;
+wait_display.y = 100;
+info.stage.addChild(wait_display);
+
+
+// 描画時の設定
+let display_ratio = 1/60;
+let supposed_app_w = 1440;
+let supposed_app_h = supposed_app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]);
+let app_display_ratio = app_w / supposed_app_w;
+
+// 描画時のフラグ
+let displaying = false; 
+
+
+// データの受信時処理 
+worker.addEventListener('message', function(msg){
+  //console.log(msg.data);
+  if (!displaying){
+    display_sensor_data(msg.data);
+  }
+}, false);
+
+
+// データ描画処理
+var expantion_ratio = display_ratio * app_display_ratio;
+var data   = new PIXI.Graphics();
+var sensor = new PIXI.Graphics();
+data.setTransform(0, 0, expantion_ratio, expantion_ratio);
+sensor.setTransform(0, 0, expantion_ratio, expantion_ratio);
+app.stage.addChild(data);
+app.stage.addChild(sensor);
+var data_size   = 2  / expantion_ratio;
+var sensor_size = 10 / expantion_ratio;
+
+//worker.postMessage({request: "raw_data"});
+
+function display_sensor_data(json){
+  //if (json!=null){
+  displaying = true;
+
+  start = new Date();
+  data.clear();
+
+  for (var i=1; i<json.length; i++){
+    sensor.beginFill(0x00ff00)
+    sensor.drawRect(json[i].x - sensor_size/2, 
+		    json[i].y - sensor_size/2, 
+         	    sensor_size, sensor_size);
+    sensor.endFill();
+
+    for (var j=0; j<json[i].data.length; j += 1){
+      data.beginFill(0xff0000)
+      data.drawRect(json[i].data[j][0] - data_size/2, 
+                    json[i].data[j][1] - data_size/2,
+		    data_size, data_size)
+      data.endFill();
+    }
+  }
+  now  = new Date();
+  time = to_date(json[1].time);
+  lag  = (now.getTime() - time.getTime()) / 1000;
+  fps  = Math.round((1000 / (now.getTime() - pre_get_time.getTime())) * 1000) / 1000;
+  drawing = now.getTime() - start.getTime();
+  wait = (now.getTime() - pre_get_time.getTime()) - drawing;
+  lag_display.text = 'Lag: ' + lag + 's';
+  fps_display.text = 'FPS: ' + fps + 'fps';
+  drawing_display.text = 'Drawing: ' + drawing + 'ms';
+  if (drawing > 50){ drawing_display.fill = 0x00ff00; }
+  wait_display.text = 'Wait: ' + wait + 'ms';
+  if (wait > 50){ wait_display.fill = 0x00ff00; }
+
+  pre_get_time = now;
+
+  displaying = false;
+  //}
+  //worker.postMessage({request: 'raw_data'});
+}
+
+
+// 時間変換
+function to_date (time){
+  var pattern = new RegExp('([0-9]{4})/([0-9]{2})/([0-9]{2}).([0-9]{2}):([0-9]{2}):([0-9]{2}).([0-9]{3})', 'g');
+  var result = pattern.exec(time);
+  var year = Number(result[1]);
+  var mon  = Number(result[2]);
+  var day  = Number(result[3]);
+  var hour = Number(result[4]);
+  var min  = Number(result[5]);
+  var sec  = Number(result[6]);
+  var mil  = Number(result[7]);
+
+  var t_result = new Date(year, mon-1, day, hour, min, sec, mil);
+  return t_result;
+}
+
+
+
+/*########################
+######## info処理 ######## 
+########################*/
+// ページ更新ボタン
+let reload_text = new PIXI.Text('RELOAD',
+  {fontFamily : 'Arial',
+   fontSize : 15, 
+   fill : 0x000000, 
+   align : 'center'});
+reload_text.x = 25;
+reload_text.y = 25;
+let reload = new PIXI.Graphics()
+  .beginFill(0xffffff)
+  .drawRect(20, 20, 70, 30)
+  .endFill();
+reload.interactive = true;
+
+info.stage.addChild(reload);
+info.stage.addChild(reload_text);
+
+reload.on('click', function(){
+  displaying = true;
+  window.location.reload(true);
+});

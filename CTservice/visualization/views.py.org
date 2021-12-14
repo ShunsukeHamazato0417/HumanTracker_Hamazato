@@ -1,0 +1,78 @@
+from django.shortcuts import render, get_object_or_404, redirect
+
+# Create your views here.
+
+def visualization(request):
+    return render(request, 'visualization.html')
+
+def visualization_to(request):
+    return render(request, 'visualization_to.html')
+
+def visualization_2(request):
+    return render(request, 'visualization_2.html')
+
+def visualization_3(request):
+    return render(request, 'visualization_3.html')
+
+def visualization_4(request):
+    return render(request, 'visualization_4.html')
+
+def visualization_raw_data(request):
+    return render(request, 'visualization_raw_data.html')
+
+def visualization_background(request):
+    return render(request, 'visualization_background.html')
+
+def visualization_remove_bg_data(request):
+    return render(request, 'visualization_remove_bg_data.html')
+
+def visualization_remove_bg_data_to(request):
+    return render(request, 'visualization_remove_bg_data_to.html')
+
+def visualization_noise_filtering_data(request):
+    return render(request, 'visualization_noise_filtering_data.html')
+
+def visualization_clustering(request):
+    return render(request, 'visualization_clustering.html')
+
+
+def p5js_visualization(request):
+    return render(request, 'p5js/visualization.html')
+
+def p5js_visualization_raw_data(request):
+    return render(request, 'p5js/visualization_raw_data.html')
+
+def p5js_visualization_background(request):
+    return render(request, 'p5js/visualization_background.html')
+
+def p5js_visualization_remove_bg_data(request):
+    return render(request, 'p5js/visualization_remove_bg_data.html')
+
+def p5js_visualization_noise_filtering_data(request):
+    return render(request, 'p5js/visualization_noise_filtering_data.html')
+
+def p5js_visualization_clustering(request):
+    return render(request, 'p5js/visualization_clustering.html')
+
+
+def pixi_visualization(request):
+    return render(request, 'pixi/visualization.html')
+
+def pixi_visualization_raw_data(request):
+    return render(request, 'pixi/visualization_raw_data.html')
+
+def pixi_visualization_background(request):
+    return render(request, 'pixi/visualization_background.html')
+
+def pixi_visualization_remove_bg_data(request):
+    return render(request, 'pixi/visualization_remove_bg_data.html')
+
+def pixi_visualization_noise_filtering_data(request):
+    return render(request, 'pixi/visualization_noise_filtering_data.html')
+
+def pixi_visualization_clustering(request):
+    return render(request, 'pixi/visualization_clustering.html')
+
+
+def test_raw_data(request):
+    return render(request, 'test/raw_data.html')

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="{% static 'calibration/css/calibration.css' %}" />
+    <title>visualization_remove_bg_data</title>
+  </head>
+
+  <body>
+    <h2>visualization_remove_bg_data</h2>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
+    <script type="text/javascript" src={% static 'visualization/js/visualization_remove_bg_data.js' %}></script>
+    <div class="canvas-container">
+      <div class="canvas" id="canvas"></div>
+      <div class="canvas" id="info"></div>
+    </div>
+  </body>
+</html>
+
