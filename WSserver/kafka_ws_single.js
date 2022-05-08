@@ -36,6 +36,7 @@ const wss = new server({
 let connections = [];
 let raw_data_connections = [];
 let remove_bg_data_connections = [];
+let integrated_remove_bg_data_connections = [];
 
 
 /* ----- Read Config ----- */
@@ -63,6 +64,7 @@ for (var i=1; i<=sensor_n; i++){
 /* -----Sending Data Format ----- */
 let sending_raw_data       = Array(sensor_n + 1);
 let sending_remove_bg_data = Array(sensor_n + 1);
+let sending_integrated_remove_bg_data = Array(sensor_n + 1);
 
 sending_raw_data[0] = {"tag": "raw_data", 
                        "num_of_sensors": sensor_n,
@@ -117,6 +119,25 @@ remove_bg_data_consumer_group.on('connect', function(){
   console.log('remove_bg_data: connected!');
 });
 
+// integrated_remove_bg_data
+const integrated_remove_bg_data_consumerOptions = {
+  kafkaHost: kafka_hosts,
+  groupId : 'i_remove_bg_data',
+  autoCommit : false,
+  protocol : ['roundrobin'],
+        fromOffset : 'latest',
+  encoding : 'utf8', 
+        commitOffsetsOnFirstJoin : true,
+        outOfRangeOffset: 'latest'
+};
+
+const integrated_remove_bg_data_consumer_group = new ConsumerGroup(Object.assign({ id : 'wsserver-integrated_remove_bg_data'}, integrated_remove_bg_data_consumerOptions), 
+                        ["integrated_remove_bg_data"]);
+integrated_remove_bg_data_consumer_group.on('message', onIntegratedMessage_kafka);
+integrated_remove_bg_data_consumer_group.on('error', onError_kafka);
+integrated_remove_bg_data_consumer_group.on('connect', function(){
+console.log('integrated_remove_bg_data: connected!');
+});
 
 
 
@@ -133,6 +154,9 @@ wss.on('connection', function(ws){
     } else if (t.ty == 'remove_bg_data'){
       remove_bg_data_connections.push([ws, t.interval]);
       console.log('remove_bg_data: ' + remove_bg_data_connections.length);
+    } else if (t.ty == 'integrated_remove_bg_data'){
+      integrated_remove_bg_data_connections.push([ws, t.interval]);
+      console.log('integrated_remove_bg_data: ' + integrated_remove_bg_data_connections.length);
     }
   });
 
@@ -152,6 +176,7 @@ wss.on('connection', function(ws){
 
 var raw_data_send_n = 0;
 var remove_bg_data_send_n = 0;
+var integrated_remove_bg_data_send_n = 0;
 var send_max = 1;
 for (var i=1; i<=fps; i++){send_max = send_max * i;}
 
@@ -173,12 +198,21 @@ function broadcast(ty, message){
       }
       //console.log(con.bufferedAmount);
     });
+  } else if (ty == 'integrated_remove_bg_data'){
+    integrated_remove_bg_data_send_n = (integrated_remove_bg_data_send_n+1) % send_max;
+    integrated_remove_bg_data_connections.forEach(function (con, i){
+      if (integrated_remove_bg_data_send_n % con[1] == 0){
+        con[0].send(JSON.stringify(message));
+      }
+      //console.log(con.bufferedAmount);
+    });
   }
 
 };
 
 setInterval(broadcast, 1000/fps, 'raw_data', sending_raw_data);
 setInterval(broadcast, 1000/fps, 'remove_bg_data', sending_remove_bg_data);
+setInterval(broadcast, 1000/fps, 'integrated_remove_bg_data', sending_integrated_remove_bg_data);
 
 
 /* ----- Kafka Functions ----- */
@@ -216,9 +250,24 @@ function onMessage_kafka (message) {
       json.id, 
       lag/1000
     );*/
-  }
-
+  } 
   //console.log(sending_raw_data);
+}
+
+
+function onIntegratedMessage_kafka (message) {
+  //console.log(message);
+  var now = new Date();
+  var json = JSON.parse(message.value);
+
+  sending_integrated_remove_bg_data[json.id] = {
+    "time"      : json.time,
+    "id"        : json.id,
+    "x"         : sensor_info[json.id].x,
+    "y"         : sensor_info[json.id].y,
+    "direction" : sensor_info[json.id].direction,
+    "data"      : json.data
+  };
 }
 
 
