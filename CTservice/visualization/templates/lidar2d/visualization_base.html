@@ -14,9 +14,16 @@
     <div class="head-container">
       <div class="head-title">visualization {{ title }}</div>
       <div class="head-links">
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link2 }}">>{{ link2 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
+        <div class="head-link">
+          <form action="">
+            <select name="type selector">
+              <option value="raw_data">raw_data</option>
+              <option value="remove_bg_data">remove_bg_data</option>
+              <option value="cluster_data">cluster_data</option>
+              <option value="detected_data">detected_data</option>
+            </select>
+          </form>
+        </div>
       </div>
     </div>
     {% verbatim %}

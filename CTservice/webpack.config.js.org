@@ -16,8 +16,6 @@ module.exports = {
       worker_integrated:  './assets/js/worker_integrated.js',
       main_cluster:    './assets/js/main_cluster.js', 
       worker_cluster:  './assets/js/worker_cluster.js',
-      main_detected:    './assets/js/main_detected.js', 
-      worker_detected:  './assets/js/worker_detected.js',
   },
 
   output: {

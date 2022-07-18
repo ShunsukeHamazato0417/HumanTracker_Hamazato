@@ -3,6 +3,27 @@
   margin: 0px;
 }
 
+.head-container { 
+  display: flex;
+  margin: 0px;
+}
+
+.head-title {
+  margin: 10px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.head-links{
+  display: flex;
+  margin: 0 0 0 auto;
+}
+
+.head-link {
+  margin: 13px;
+  font-size: 18px;
+}
+
 body {
   margin: 0px;
   overflow: hidden;

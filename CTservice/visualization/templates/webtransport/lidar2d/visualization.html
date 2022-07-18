@@ -16,7 +16,6 @@
       <div class="head-links">
         <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
         <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link2 }}">>{{ link2 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
       </div>
     </div>
     {% verbatim %}
@@ -32,7 +31,7 @@
     </div>
     {% endverbatim %}
     
-    {% render_bundle 'main' %}
+    {% render_bundle 'main_webtransport' %}
     
   </body>
 </html>

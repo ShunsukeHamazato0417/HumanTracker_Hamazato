@@ -1,0 +1,106 @@
+{
+    "server": {
+        "address": "192.168.50.12",
+        "port"   : 8081
+    },
+    
+    "kafka": {
+        "bootstrap_servers": ["192.168.50.42:9092", 
+                              "192.168.50.43:9092",
+                              "192.168.50.44:9092",
+                              "192.168.50.45:9092"],
+        "topics" : 
+            {"raw_data": ["raw_data_1",
+                          "raw_data_2",
+                          "raw_data_3",
+                          "raw_data_4",
+                          "raw_data_5",
+                          "raw_data_6",
+                          "raw_data_7",
+                          "raw_data_8",
+                          "raw_data_9"],
+            "remove_bg_data": ["remove_bg_data_1",
+                                "remove_bg_data_2",
+                                "remove_bg_data_3",
+                                "remove_bg_data_4",
+                                "remove_bg_data_5",
+                                "remove_bg_data_6",
+                                "remove_bg_data_7",
+                                "remove_bg_data_8",
+                                "remove_bg_data_9"],
+            "integrated_remove_bg_data": ["integrated_remove_bg_data"],
+            "dbscan_cluster_data": ["cluster_data"],
+            "detected_data": ["detected_data"]}
+    },
+
+    "sensor": {
+        "num": 9,
+        "fps": 10,
+        "sensors": [
+            {
+                "id"        : 1,
+                "ip"        : "172.16.0.11",
+                "sensor_ip" : "172.16.1.11",
+                "x"         : 66100,
+                "y"         : 10920,
+                "direction" : 89.1
+            },{
+                "id"        : 2,
+                "ip"        : "172.16.0.12",
+                "sensor_ip" : "172.16.1.12",
+                "x"         : 64720,
+                "y"         : 6980,
+                "direction" : 179.6 
+            },{
+                "id"        : 3,
+                "ip"        : "172.16.0.13",
+                "sensor_ip" : "172.16.1.13",
+                "x"         : 51800,
+                "y"         : 16680,
+                "direction" : -90.5
+            },{
+                "id"        : 4,
+                "ip"        : "172.16.0.14",
+                "sensor_ip" : "172.16.1.14",
+                "x"         : 43600,
+                "y"         : 11280,
+                "direction" : 89.3
+            },{
+                "id"        : 5,
+                "ip"        : "172.16.0.15",
+                "sensor_ip" : "172.16.1.15",
+                "x"         : 35120,
+                "y"         : 16880,
+                "direction" : -90.9
+            },{
+                "id"        : 6,
+                "ip"        : "172.16.0.16",
+                "sensor_ip" : "172.16.1.16",
+                "x"         : 52120,
+                "y"         : 23680,
+                "direction" : 0.4 
+            },{
+                "id"        : 7,
+                "ip"        : "172.16.0.17",
+                "sensor_ip" : "172.16.1.17",
+                "x"         : 51660,
+                "y"         : 37060,
+                "direction" : 91.4
+            },{
+                "id"        : 8,
+                "ip"        : "172.16.0.18",
+                "sensor_ip" : "172.16.1.18",
+                "x"         : 27880,
+                "y"         : 37060,
+                "direction" : 87.6
+            },{
+                "id"        : 9,
+                "ip"        : "172.16.0.19",
+                "sensor_ip" : "172.16.1.19",
+                "x"         : 27380,
+                "y"         : 10260,
+                "direction" : 180
+            }
+        ]
+    }
+}

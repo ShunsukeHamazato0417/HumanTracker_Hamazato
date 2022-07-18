@@ -65,6 +65,7 @@ for (var i=1; i<=sensor_n; i++){
 let sending_raw_data       = Array(sensor_n + 1);
 let sending_remove_bg_data = Array(sensor_n + 1);
 let sending_integrated_remove_bg_data = Array(sensor_n + 1);
+let sending_dbscan_cluster_data;
 
 sending_raw_data[0] = {"tag": "raw_data", 
                        "num_of_sensors": sensor_n,
@@ -139,6 +140,23 @@ integrated_remove_bg_data_consumer_group.on('connect', function(){
 console.log('integrated_remove_bg_data: connected!');
 });
 
+const dbscan_cluster_data_consumerOptions = {
+  kafkaHost: kafka_hosts,
+  groupId : 'cluster_data',
+  autoCommit : false,
+  protocol : ['roundrobin'],
+        fromOffset : 'latest',
+  encoding : 'utf8', 
+        commitOffsetsOnFirstJoin : true,
+        outOfRangeOffset: 'latest'
+};
+const dbscan_cluster_data_consumer_group = new ConsumerGroup(Object.assign({ id : 'wsserver-dbscan_cluster_data'}, dbscan_cluster_data_consumerOptions), 
+					          ["cluster_data"]);
+raw_data_consumer_group.on('message', onMessage_kafka);
+raw_data_consumer_group.on('error', onError_kafka);
+raw_data_consumer_group.on('connect', function(){
+  console.log('cluster_data: connected!');
+});
 
 
 /* ----- WebScoket Functions ----- */
@@ -271,12 +289,12 @@ function onIntegratedMessage_kafka (message) {
   };
 }
 
-function onDbscanClusterMessage_kafka (message) {
+/*function onDbscanClusterMessage_kafka (message) {
   var now = new Date();
   var json = JSON.parse(message.value);
 
   sending_dbscan_cluster_data = json;
-}
+}*/
 
 
 function onError_kafka (error) {

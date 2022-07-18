@@ -17,7 +17,7 @@ const fps         = config_json[1].fps;
 
 const i_remove_bg_data_consumerOptions = {
 	  kafkaHost: kafka_hosts,
-	  groupId : 'remove_bg_data',
+	  groupId : 'i_remove_bg_data',
 	  autoCommit : false,
 	  protocol : ['roundrobin'],
           fromOffset : 'latest',
@@ -35,9 +35,9 @@ i_remove_bg_data_consumer_group.on('connect', function(){
 
 
 function onMessage_kafka (message) {
-  var now = new Date();
-  var json = JSON.parse(message.value);
+  //var now = new Date();
+  //var json = JSON.parse(message.value);
 
-  console.log(json);
+  console.log(message.Value);
 }
 
