@@ -90,12 +90,12 @@ if (app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]) > app_h){
   app_h = app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]);
 }
 background.addChild(contour);
-let grid = new PIXI.Graphics()
+/*let grid = new PIXI.Graphics()
   .lineStyle(1, 0x444444, 1)
   .moveTo(0, app_h/2).lineTo(app_w, app_h/2)
   .moveTo(app_w/2, 0).lineTo(app_w/2, app_h);
 background.addChild(grid);
-app.stage.addChild(background);
+app.stage.addChild(background);*/
 
 
 
@@ -118,12 +118,20 @@ var colors = [0xaaff00, 0xaa00ff, 0x00ffff,
 var basic_sensor_color = 0x00ff00;
 var basic_data_color   = 0xffffff;
 
+let time_display = new PIXI.Text('Time: --',
+  {fontFamily : 'Arial',
+   fontSize : 15,
+   fill : 0x000000,
+   align : 'center'});
+time_display.x = 10;
+time_display.y = 70;
+info.stage.addChild(time_display);
 let lag_display = new PIXI.Text('Lag: --s',
   {fontFamily : 'Arial',
    fontSize : 15,
    fill : 0x000000,
    align : 'center'});
-lag_display.x = 20;
+lag_display.x = 250;
 lag_display.y = 70;
 info.stage.addChild(lag_display);
 let fps_display = new PIXI.Text('FPS: --fps',
@@ -131,59 +139,10 @@ let fps_display = new PIXI.Text('FPS: --fps',
    fontSize : 15,
    fill : 0x000000,
    align : 'center'});
-fps_display.x = 180;
+fps_display.x = 400;
 fps_display.y = 70;
 info.stage.addChild(fps_display);
 
-//let sensor_info = [sensor_n+1];
-//let sensor_color_box = [sensor_n+1];
-//let sensor_name = [sensor_n+1];
-//let sensor_lag = [sensor_n+1];
-
-//for (var i=0; i<=sensor_n; i++) { lags[i] = 0; }
-
-//var sensor_info_top = 100;
-//var sensor_info_bot = 820;
-//var sensor_info_height = (sensor_info_bot-sensor_info_top)/sensor_n;
-//var sensor_info_column = 3;
-//var sensor_info_right = 20;
-//var sensor_info_left  = info_w - 20;
-//var sensor_info_width = (sensor_info_left - sensor_info_right) / sensor_info_column;
- 
-/*for (var i=1; i<=sensor_n; i++){
-  sensor_info[i] = new PIXI.Container();
-  sensor_color_box[i] = new PIXI.Graphics()
-			.beginFill(colors[i-1])
-			.drawRect(0, 0, 20, 20)
-			.endFill();
-  sensor_name[i] = new PIXI.Text('sensor-'+i,
-			{fontFamily : 'Arial',
-			 fontSize : 15,
-			 fill : 0x000000,
-			 algin : 'center'});
-  sensor_name[i].x = 30;
-  sensor_name[i].y = 0;
-  sensor_lag[i] = new PIXI.Text('Lag: --s',
-			{fontFamily : 'Arial',
-			 fontSize : 15,
-			 fill : 0x000000,
-			 algin : 'center'});
-  //sensor_lag[i].x = 20;
-  //sensor_lag[i].y = sensor_info_top + sensor_info_height * (i-1) + 30;
-  sensor_lag[i].x = 0;
-  sensor_lag[i].y = 30;
-
- 
-  sensor_info[i].addChild(sensor_color_box[i]);
-  sensor_info[i].addChild(sensor_name[i]);
-  sensor_info[i].addChild(sensor_lag[i]);
-
-  //info.stage.addChild(sensor_lag[i]);
-
-  sensor_info[i].x = 20 + (((i+2)%sensor_info_column)) * sensor_info_width;
-  sensor_info[i].y = sensor_info_top + sensor_info_height * (Math.ceil(i/sensor_info_column)-1);
-  info.stage.addChild(sensor_info[i]);
-}*/
 
 
 // 描画時の設定
@@ -297,13 +256,31 @@ let flags = [
     flag : false,
     box  : new PIXI.Graphics(),
     text : new PIXI.Text()
+  },
+  {
+    name : 'Hiddens',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Coloring',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Grid',
+    flag : false,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
   }
 ]
 
 var flags_x_init = 10;
 var flags_y_init = 110;
 var flags_x_width = 120;
-var flags_y_width = 0;
+var flags_y_width = 50;
 for (var i=0; i<flags.length; i++){
   //var f = flags[i];
   flags[i].box.flag = flags[i].flag;
@@ -312,7 +289,7 @@ for (var i=0; i<flags.length; i++){
   }
   flags[i].box.lineStyle(5, 0xffffff, 1, 1);
   flags[i].box.beginFill(0x000000);
-  flags[i].box.drawRect(flags_x_init+flags_x_width*i, flags_y_init, 15, 15);
+  flags[i].box.drawRect(flags_x_init+flags_x_width*(i%6), flags_y_init+flags_y_width*(Math.floor(i/6)), 15, 15);
   flags[i].box.interactive = true;
   flags[i].box.buttonMode  = true;
   flags[i].box.on('pointerup', function(){
@@ -331,8 +308,8 @@ for (var i=0; i<flags.length; i++){
                   fontSize : 15,
                   fill : 0x000000,
                   algin : 'center'}
-  flags[i].text.x = flags_x_init+flags_x_width*i+25;
-  flags[i].text.y = flags_y_init;
+  flags[i].text.x = flags_x_init+flags_x_width*(i%6)+25;
+  flags[i].text.y = flags_y_init+flags_y_width*(Math.floor(i/6));
   info.stage.addChild(flags[i].text);
 }
 
@@ -341,6 +318,7 @@ for (var i=0; i<flags.length; i++){
 // データの受信時処理
 var display_json;
 worker.addEventListener('message', function(msg){
+  //console.log(msg.data);
   display_data(msg.data);
 }, false);
 
@@ -427,6 +405,8 @@ var scaling_ratio;
 var expantion_ratio;
 var data_size   = 2  / expantion_ratio;
 var line_size = 80;
+var grid_w = 2000;
+var grid_h = 2000;
 
 var static_objects = new PIXI.Container();
 app.stage.addChild(static_objects);
@@ -441,6 +421,10 @@ var history = new PIXI.Graphics();
 var velocity = new PIXI.Graphics();
 
 function display_data(json){
+  console.log(json)
+
+  time_display.text = "Time: "+ json.time;
+
   scaling_ratio = app_w / display_w;
   expantion_ratio = display_ratio * app_display_ratio * scaling_ratio;
   data_size   = 2  / expantion_ratio;
@@ -455,12 +439,35 @@ function display_data(json){
   history.clear();
   velocity.clear();
   
+  var colf = flags.find((f) => f.name == 'Coloring');
+  var cf = flags.find((f) => f.name == 'Centroid');
+  var bf = flags.find((f) => f.name == 'BBox');
+  var sf = flags.find((f) => f.name == 'Shape');
+  var rf = flags.find((f) => f.name == 'Reg_Line');
+  var hf = flags.find((f) => f.name == 'History');
+  var vf = flags.find((f) => f.name == 'Velocity');
+
+
   for (var o of json.objects){
     var c = o.cluster;
-    var col = colors[o.id%9];
+    var col;
+    if (colf.box.flag){
+      col = colors[o.id%9];
+    } else {
+      /*if (o.assign_type=='hull' || o.assign_type=='hull_hidden'){ col = 0xff0000} 
+        else if (o.assign_type=='bbox' || o.assign_type=='bbox_hidden'){ col = 0x00ff00}
+        else if (o.assign_type=='distance' || o.assign_type=='distance_hidden'){ col = 0x0000ff}*/
+      /*if (o.assign_type=='merged'){ col = 0xff0000} 
+      else if (o.assign_type=='single'){ col = 0x00ff00}
+      else if (o.assign_type=='distance' || o.assign_type=='distance_hidden'){ col = 0x0000ff}
+      else { col = 0xffffff}*/
+      if (o.status=='moving'){ col = 0xff0000} 
+      else if (o.status=='stopping'){ col = 0x00ff00}
+      else { col = 0xffffff}
+    }
+    //if (o.status=='stopping') {col = 0xffffff;}
     var alpha = 1;
 
-    var cf = flags.find((f) => f.name == 'Centroid');
     if (cf.box.flag){
       center.lineStyle(line_size, 0xffffff, alpha, 1);
       center.beginFill(0xff0000);
@@ -468,7 +475,6 @@ function display_data(json){
       center.endFill();
     }
 
-    var bf = flags.find((f) => f.name == 'BBox');
     if (bf.box.flag){
       bbox.lineStyle(line_size, col, alpha);
       bbox.moveTo(c.bbox.xmin, c.bbox.ymin);
@@ -478,7 +484,6 @@ function display_data(json){
       bbox.lineTo(c.bbox.xmin, c.bbox.ymin)
     }
 
-    var sf = flags.find((f) => f.name == 'Shape');
     if (sf.box.flag){
       shape.lineStyle(line_size, col, alpha);
       shape.moveTo(c.hull.points[c.hull.points.length-1].x, c.hull.points[c.hull.points.length-1].y);
@@ -497,14 +502,12 @@ function display_data(json){
       update_objects.addChild(liner);
     }*/
 
-    var rf = flags.find((f) => f.name == 'Reg_Line');
     if (rf.box.flag){
       reg_line.lineStyle(line_size, col, alpha);
       reg_line.moveTo(c.bbox_start.x, c.regression_line.a*c.bbox_start.x+c.regression_line.b);
       reg_line.lineTo(c.bbox_start.x+c.bbox_x_len, c.regression_line.a*(c.bbox_start.x+c.bbox_x_len)+c.regression_line.b);
     }
 
-    var hf = flags.find((f) => f.name == 'History');
     if (hf.box.flag){
       history.lineStyle(line_size, col, alpha);
       history.moveTo(c.centroid.x, c.centroid.y);
@@ -513,143 +516,179 @@ function display_data(json){
       }
     }
 
-    //console.log(o.velocity.speed);
-    var vf = flags.find((f) => f.name == 'Velocity');
     if (vf.box.flag){
-      velocity.lineStyle(line_size, col, alpha);
-      velocity.moveTo(c.centroid.x, c.centroid.y);
-      velocity.lineTo(500*o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)+c.centroid.x, 
-                      500*o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)+c.centroid.y);
+      //if (o.velocity.speed>5){
+        velocity.lineStyle(line_size, col, alpha);
+        velocity.moveTo(c.centroid.x, c.centroid.y);
+        velocity.lineTo(500*o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)+c.centroid.x, 
+                        500*o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)+c.centroid.y);
+      //}
     }
 
     //console.log(c.circurity);
     //console.log(c.area);
-    console.log(o.assign_type + ": " + o.overlap);
-  }
-
-  for (var o of json.hiddens){
-    var c = o.cluster;
-    var col = colors[o.id%9];
-    var alpha = 0.25;
-
-    var offset_x, offset_y;
-    var kalman_lag = to_date(json.time).getTime() - to_date(o.history.log[o.history.log.length-1].time).getTime();
-    offset_x = o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)*kalman_lag;
-    offset_y = o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)*kalman_lag;
-
-
-    var cf = flags.find((f) => f.name == 'Centroid');
-    if (cf.box.flag){
-      center.lineStyle(line_size, 0xffffff, alpha, 1);
-      center.beginFill(0xff0000);
-      center.drawCircle(c.centroid.x+offset_x, c.centroid.y+offset_y, 20);
-      center.endFill();
-    }
-
-
-    var bf = flags.find((f) => f.name == 'BBox');
-    if (bf.box.flag){
-      bbox.lineStyle(line_size, col, alpha);
-      bbox.moveTo(c.bbox.xmin+offset_x, c.bbox.ymin+offset_y);
-      bbox.lineTo(c.bbox.xmin+offset_x, c.bbox.ymax+offset_y);
-      bbox.lineTo(c.bbox.xmax+offset_x, c.bbox.ymax+offset_y);
-      bbox.lineTo(c.bbox.xmax+offset_x, c.bbox.ymin+offset_y);
-      bbox.lineTo(c.bbox.xmin+offset_x, c.bbox.ymin+offset_y);
-    }
-
-    var sf = flags.find((f) => f.name == 'Shape');
-    if (sf.box.flag){
-      shape.lineStyle(line_size, col, alpha);
-      shape.moveTo(c.hull.points[c.hull.points.length-1].x+offset_x, c.hull.points[c.hull.points.length-1].y+offset_y);
-      for (var s of c.hull.points){
-        shape.lineTo(s.x+offset_x, s.y+offset_y);
-      }
-    }
-
-    /*console.log(c.linerity);
-    if (c.linerity>1){
-      var liner = new PIXI.Graphics();
-      liner.lineStyle(100, col, 1, 1);
-      liner.beginFill(col);
-      liner.drawRect(c.bbox_start.x, c.bbox_start.y, c.bbox_x_len, c.bbox_y_len);
-      liner.endFill();
-      update_objects.addChild(liner);
+    /*if (o.velocity.speed>5){
+      console.log(o);
+      console.log(o.assign_type + ": " + o.overlap);
+      console.log(o.velocity.speed);
     }*/
+  }
 
-    var rf = flags.find((f) => f.name == 'Reg_Line');
-    if (rf.box.flag){
-      reg_line.lineStyle(line_size, col, alpha);
-      reg_line.moveTo(c.bbox_start.x+offset_x, c.regression_line.a*c.bbox_start.x+c.regression_line.b+offset_y);
-      reg_line.lineTo(c.bbox_start.x+c.bbox_x_len+offset_x, c.regression_line.a*(c.bbox_start.x+c.bbox_x_len)+c.regression_line.b+offset_y);
+
+  var hiddenf = flags.find((f) => f.name == 'Hiddens');
+  if (hiddenf.box.flag){
+    for (var o of json.hiddens){
+      var c = o.cluster;
+      var col;
+      if (colf.box.flag){
+        col = colors[o.id%9];
+      } else {
+        /*if (o.assign_type=='hull' || o.assign_type=='hull_hidden'){ col = 0xff0000} 
+        else if (o.assign_type=='bbox' || o.assign_type=='bbox_hidden'){ col = 0x00ff00}
+        else if (o.assign_type=='distance' || o.assign_type=='distance_hidden'){ col = 0x0000ff}*/
+        if (o.assign_type=='merged'){ col = 0xff0000} 
+        else if (o.assign_type=='single'){ col = 0x00ff00}
+        else if (o.assign_type=='distance' || o.assign_type=='distance_hidden'){ col = 0x0000ff}
+        else { col = 0xffffff}
+      }
+      var alpha = 0.25;
+
+      var offset_x = 0, offset_y = 0;
+      //var kalman_lag = to_date(json.time).getTime() - to_date(o.history.log[o.history.log.length-1].time).getTime();
+      //offset_x = o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)*kalman_lag;
+      //offset_y = o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)*kalman_lag;
+
+
+      if (cf.box.flag){
+        center.lineStyle(line_size, 0xffffff, alpha, 1);
+        center.beginFill(0xff0000);
+        center.drawCircle(c.centroid.x+offset_x, c.centroid.y+offset_y, 20);
+        center.endFill();
+      }
+
+      if (bf.box.flag){
+        bbox.lineStyle(line_size, col, alpha);
+        bbox.moveTo(c.bbox.xmin+offset_x, c.bbox.ymin+offset_y);
+        bbox.lineTo(c.bbox.xmin+offset_x, c.bbox.ymax+offset_y);
+        bbox.lineTo(c.bbox.xmax+offset_x, c.bbox.ymax+offset_y);
+        bbox.lineTo(c.bbox.xmax+offset_x, c.bbox.ymin+offset_y);
+        bbox.lineTo(c.bbox.xmin+offset_x, c.bbox.ymin+offset_y);
+      }
+
+      if (sf.box.flag){
+        shape.lineStyle(line_size, col, alpha);
+        shape.moveTo(c.hull.points[c.hull.points.length-1].x+offset_x, c.hull.points[c.hull.points.length-1].y+offset_y);
+        for (var s of c.hull.points){
+          shape.lineTo(s.x+offset_x, s.y+offset_y);
+        }
+      }
+
+      /*console.log(c.linerity);
+      if (c.linerity>1){
+        var liner = new PIXI.Graphics();
+        liner.lineStyle(100, col, 1, 1);
+        liner.beginFill(col);
+        liner.drawRect(c.bbox_start.x, c.bbox_start.y, c.bbox_x_len, c.bbox_y_len);
+        liner.endFill();
+        update_objects.addChild(liner);
+      }*/
+
+      if (rf.box.flag){
+        reg_line.lineStyle(line_size, col, alpha);
+        reg_line.moveTo(c.bbox_start.x+offset_x, c.regression_line.a*c.bbox_start.x+c.regression_line.b+offset_y);
+        reg_line.lineTo(c.bbox_start.x+c.bbox_x_len+offset_x, c.regression_line.a*(c.bbox_start.x+c.bbox_x_len)+c.regression_line.b+offset_y);
+      }
+
+      if (hf.box.flag){
+        history.lineStyle(line_size, col, alpha);
+        history.moveTo(c.centroid.x+offset_x, c.centroid.y+offset_y);
+        for (var i=o.history.log.length-1; i>=0; i--){
+          history.lineTo(o.history.log[i].location.x, o.history.log[i].location.y);
+        }
+      }
+
+      //console.log(o.velocity.speed);
+      if (vf.box.flag){
+        velocity.lineStyle(line_size, col, alpha);
+        velocity.moveTo(c.centroid.x+offset_x, c.centroid.y+offset_y);
+        velocity.lineTo(500*o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)+c.centroid.x+offset_x, 
+                        500*o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)+c.centroid.y+offset_y);
+      }
+
+      //console.log(c.circurity);
+      //console.log(c.area);
+      //console.log(o.assign_type + ": " + o.overlap);
     }
-
-    var hf = flags.find((f) => f.name == 'History');
-    if (hf.box.flag){
-      history.lineStyle(line_size, col, alpha);
-      history.moveTo(c.centroid.x+offset_x, c.centroid.y+offset_y);
-      for (var i=o.history.log.length-1; i>=0; i--){
-        history.lineTo(o.history.log[i].location.x, o.history.log[i].location.y);
+  }
+  
+    update_objects.addChild(bbox);
+    update_objects.addChild(shape);
+    update_objects.addChild(reg_line);
+    update_objects.addChild(history);
+    update_objects.addChild(velocity);
+    update_objects.addChild(center);
+  
+    now = new Date();
+    time = to_date(json.time);
+    lag  = now.getTime() - time.getTime();
+  
+  
+    /**
+     * static objects
+     */
+    static_objects.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
+    static_objects.removeChildren();
+  
+    var area = new PIXI.Graphics();
+    static_objects.addChild(area);
+    area.clear();
+    area.lineStyle(100, 0xffffff, 100)
+        .moveTo(huamn_detect_area.area[huamn_detect_area.area.length-1][0], huamn_detect_area.area[huamn_detect_area.area.length-1][1]);
+    for (var p in huamn_detect_area.area){
+      area.lineTo(huamn_detect_area.area[p][0], huamn_detect_area.area[p][1]);
+    }
+  
+    var facility = new PIXI.Graphics();
+    static_objects.addChild(facility);
+    facility.clear();
+    facility.lineStyle(100, 0xffffff, 100);
+    for (var f of facilities){
+      facility.moveTo(f.area[f.area.length-1][0], f.area[f.area.length-1][1]);
+      for (var p in f.area){
+        facility.lineTo(f.area[p][0], f.area[p][1]);
+      }
+    }
+    facility.lineStyle(400, 0x00ff00, 400);
+    for (var f of facilities){
+      for (var p in f.entrances){
+        facility.moveTo(f.entrances[p][0][0], f.entrances[p][0][1]);
+        facility.lineTo(f.entrances[p][1][0], f.entrances[p][1][1]);
       }
     }
 
-    //console.log(o.velocity.speed);
-    var vf = flags.find((f) => f.name == 'Velocity');
-    if (vf.box.flag){
-      velocity.lineStyle(line_size, col, alpha);
-      velocity.moveTo(c.centroid.x+offset_x, c.centroid.y+offset_y);
-      velocity.lineTo(500*o.velocity.speed*Math.cos(3.141592*o.velocity.direction/180)+c.centroid.x+offset_x, 
-                      500*o.velocity.speed*Math.sin(3.141592*o.velocity.direction/180)+c.centroid.y+offset_y);
+    var gridf = flags.find((f) => f.name == 'Grid');
+    if (gridf.box.flag){
+      var cells = new PIXI.Graphics();
+      static_objects.addChild(cells);
+      cells.clear();
+      cells.lineStyle(80, 0xdddddd, 80, 0.3);
+      var xmin = huamn_detect_area.area[0][0];
+      var ymin = huamn_detect_area.area[0][1];
+      var xmax = huamn_detect_area.area[huamn_detect_area.area.length-2][0];
+      var ymax = huamn_detect_area.area[huamn_detect_area.area.length-2][1];
+      var x = xmin + grid_w;
+      var y = ymin + grid_h;
+      while (x < xmax){
+        cells.moveTo(x, ymin);
+        cells.lineTo(x, ymax);
+        x += grid_w;
+      }
+      while (y < ymax){
+        cells.moveTo(xmin, y);
+        cells.lineTo(xmax, y);
+        y += grid_h;
+      }
     }
-
-    //console.log(c.circurity);
-    //console.log(c.area);
-    //console.log(o.assign_type + ": " + o.overlap);
-  }
-
-  update_objects.addChild(bbox);
-  update_objects.addChild(shape);
-  update_objects.addChild(reg_line);
-  update_objects.addChild(history);
-  update_objects.addChild(velocity);
-  update_objects.addChild(center);
-
-  now = new Date();
-  time = to_date(json.time);
-  lag  = now.getTime() - time.getTime();
-
-
-  /**
-   * static objects
-   */
-  static_objects.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  static_objects.removeChildren();
-
-  var area = new PIXI.Graphics();
-  static_objects.addChild(area);
-  area.clear();
-  area.lineStyle(100, 0xffffff, 100)
-      .moveTo(huamn_detect_area.area[huamn_detect_area.area.length-1][0], huamn_detect_area.area[huamn_detect_area.area.length-1][1]);
-  for (var p in huamn_detect_area.area){
-    area.lineTo(huamn_detect_area.area[p][0], huamn_detect_area.area[p][1]);
-  }
-
-  var facility = new PIXI.Graphics();
-  static_objects.addChild(facility);
-  facility.clear();
-  facility.lineStyle(100, 0xffffff, 100);
-  for (var f of facilities){
-    facility.moveTo(f.area[f.area.length-1][0], f.area[f.area.length-1][1]);
-    for (var p in f.area){
-      facility.lineTo(f.area[p][0], f.area[p][1]);
-    }
-  }
-  facility.lineStyle(400, 0x00ff00, 400);
-  for (var f of facilities){
-    for (var p in f.entrances){
-      facility.moveTo(f.entrances[p][0][0], f.entrances[p][0][1]);
-      facility.lineTo(f.entrances[p][1][0], f.entrances[p][1][1]);
-    }
-  }
 
   fps_count++;
 }
@@ -682,7 +721,6 @@ function to_date (time){
 
   var t_result = new Date(year, mon-1, day, hour, min, sec, mil);
   return t_result;
-  return 0
 }
 
 

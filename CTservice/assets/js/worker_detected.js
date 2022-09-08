@@ -60,7 +60,6 @@ function ws_connect(){
   ws.onmessage = function(msg){
     //console.log(msg.data);
     var json = JSON.parse(msg.data);
-    console.log(json);
     self.postMessage(json);
   };
 

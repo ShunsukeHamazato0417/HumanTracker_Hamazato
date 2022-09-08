@@ -29,13 +29,14 @@
                                 "remove_bg_data_8",
                                 "remove_bg_data_9"],
             "integrated_remove_bg_data": ["integrated_remove_bg_data"],
+            "aggregated_remove_bg_data": ["aggregated_remove_bg_data"],
             "dbscan_cluster_data": ["cluster_data"],
             "detected_data": ["detected_data"]}
     },
 
     "sensor": {
         "num": 9,
-        "fps": 10,
+        "fps": 20,
         "sensors": [
             {
                 "id"        : 1,

@@ -282,6 +282,92 @@ function mouse_up(){
     }
   });
 }*/
+let flags = [
+  {
+    name : 'Centroid',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'BBox',
+    flag : false,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Shape',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'History',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Velocity',
+    flag : false,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Reg_Line',
+    flag : false,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Hiddens',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  },
+  {
+    name : 'Coloring',
+    flag : true,
+    box  : new PIXI.Graphics(),
+    text : new PIXI.Text()
+  }
+]
+
+var flags_x_init = 10;
+var flags_y_init = 110;
+var flags_x_width = 120;
+var flags_y_width = 50;
+for (var i=0; i<flags.length; i++){
+  //var f = flags[i];
+  flags[i].box.flag = flags[i].flag;
+  if (!flags[i].box.flag){
+    flags[i].box.alpha = 0.25;
+  }
+  flags[i].box.lineStyle(5, 0xffffff, 1, 1);
+  flags[i].box.beginFill(0x000000);
+  flags[i].box.drawRect(flags_x_init+flags_x_width*(i%6), flags_y_init+flags_y_width*(Math.floor(i/6)), 15, 15);
+  flags[i].box.interactive = true;
+  flags[i].box.buttonMode  = true;
+  flags[i].box.on('pointerup', function(){
+    if (this.flag){
+      this.flag = false;
+      this.alpha = 0.25;
+    } else {
+      this.flag = true;
+      this.alpha = 1;
+    }
+  });
+  info.stage.addChild(flags[i].box);
+
+  flags[i].text.text = flags[i].name;
+  flags[i].text.style = {fontFamily : 'Arial',
+                  fontSize : 15,
+                  fill : 0x000000,
+                  algin : 'center'}
+  flags[i].text.x = flags_x_init+flags_x_width*(i%6)+25;
+  flags[i].text.y = flags_y_init+flags_y_width*(Math.floor(i/6));
+  info.stage.addChild(flags[i].text);
+}
 
 
 // データの受信時処理
@@ -365,133 +451,138 @@ display_max_x = app_w;
 display_max_y = app_h;
 var scaling_ratio;
 var expantion_ratio;
-var center = new PIXI.Graphics();
-var points = new PIXI.Graphics();
-var bbox   = new PIXI.Graphics();
-var area   = new PIXI.Graphics();
-var facility = new PIXI.Graphics();
-//var sensor = new PIXI.Graphics();
-//data.setTransform(0, 0, expantion_ratio, expantion_ratio);
-//sensor.setTransform(0, 0, expantion_ratio, expantion_ratio);
-app.stage.addChild(center);
-app.stage.addChild(points);
-app.stage.addChild(bbox);
-app.stage.addChild(area);
-app.stage.addChild(facility);
-//app.stage.addChild(sensor);
 var data_size   = 2  / expantion_ratio;
-//var sensor_size = 10 / expantion_ratio;
+var line_size = 80;
 
-/*var lags = [sensor_n+1];
-for (var i=0; i<=sensor_n; i++) { lags[i] = 0; }*/
+var static_objects = new PIXI.Container();
+app.stage.addChild(static_objects);
+var update_objects = new PIXI.Container();
+app.stage.addChild(update_objects);
 
-//worker.postMessage({request: "raw_data"});
+var center = new PIXI.Graphics();
+var bbox = new PIXI.Graphics();
+var shape = new PIXI.Graphics();
+var reg_line = new PIXI.Graphics();
+var history = new PIXI.Graphics();
+var velocity = new PIXI.Graphics();
 
-//app.ticker.maxFPS = 20;
-//app.ticker.add(() => {
 function display_data(json){
-  //displaying = true;
+  console.log(json)
+
   scaling_ratio = app_w / display_w;
   expantion_ratio = display_ratio * app_display_ratio * scaling_ratio;
-  center.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  points.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  bbox.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  //sensor.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
   data_size   = 2  / expantion_ratio;
-  //sensor_size = 10 / expantion_ratio;
 
-  //sensor.clear();
+  update_objects.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
+
+  update_objects.removeChildren();
   center.clear();
-  points.clear();
   bbox.clear();
+  shape.clear();
+  reg_line.clear();
+  history.clear();
+  velocity.clear();
   
-  for (var c of json.clusters){
-    center.lineStyle(100, 0xff0000, 1, 1);
-    center.beginFill(0xff0000);
-    center.drawCircle(c.centroid.x, c.centroid.y, 200);
-    center.endFill();
+  var colf = flags.find((f) => f.name == 'Coloring');
+  var cf = flags.find((f) => f.name == 'Centroid');
+  var bf = flags.find((f) => f.name == 'BBox');
+  var sf = flags.find((f) => f.name == 'Shape');
+  var rf = flags.find((f) => f.name == 'Reg_Line');
+  var hf = flags.find((f) => f.name == 'History');
+  var vf = flags.find((f) => f.name == 'Velocity');
 
-    /*for (var p of c.points){
-      points.beginFill(0x00ff00);
-        points.drawRect(p.x - data_size/2, 
-                        p.y - data_size/2,
-  		      data_size, data_size);
-        points.endFill();
-    }*/
+  for (var i=0; i<json.data.length; i++){
+    for (var c of json.data[i].clusters){
+      var col = colors[i];
+      //if (o.status=='stopping') {col = 0xffffff;}
+      var alpha = 1;
 
-    bbox.lineStyle(100, 0xffffff, 100);
-    bbox.moveTo(c.bbox_start.x, c.bbox_start.y);
-    bbox.lineTo(c.bbox_start.x + c.bbox_x_len, c.bbox_start.y);
-    bbox.lineTo(c.bbox_start.x + c.bbox_x_len, c.bbox_start.y + c.bbox_y_len);
-    bbox.lineTo(c.bbox_start.x, c.bbox_start.y + c.bbox_y_len);
-    bbox.lineTo(c.bbox_start.x, c.bbox_start.y);
-  }
+      if (cf.box.flag){
+        center.lineStyle(line_size, 0xffffff, alpha, 1);
+        center.beginFill(0xff0000);
+        center.drawCircle(c.centroid.x, c.centroid.y, 20);
+        center.endFill();
+      }
 
-  area.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  area.clear();
-  area.lineStyle(100, 0xffffff, 100)
-      .moveTo(huamn_detect_area.area[huamn_detect_area.area.length-1][0], huamn_detect_area.area[huamn_detect_area.area.length-1][1]);
-  for (var p in huamn_detect_area.area){
-    area.lineTo(huamn_detect_area.area[p][0], huamn_detect_area.area[p][1]);
-  }
+      if (bf.box.flag){
+        bbox.lineStyle(line_size, col, alpha);
+        bbox.moveTo(c.bbox.xmin, c.bbox.ymin);
+        bbox.lineTo(c.bbox.xmin, c.bbox.ymax);
+        bbox.lineTo(c.bbox.xmax, c.bbox.ymax);
+        bbox.lineTo(c.bbox.xmax, c.bbox.ymin);
+        bbox.lineTo(c.bbox.xmin, c.bbox.ymin)
+      }
 
-  facility.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
-  facility.clear();
-  facility.lineStyle(100, 0xffffff, 100);
-  for (var f of facilities){
-    facility.moveTo(f.area[f.area.length-1][0], f.area[f.area.length-1][1]);
-    for (var p in f.area){
-      facility.lineTo(f.area[p][0], f.area[p][1]);
+      if (sf.box.flag){
+        shape.lineStyle(line_size, col, alpha);
+        shape.moveTo(c.hull.points[c.hull.points.length-1].x, c.hull.points[c.hull.points.length-1].y);
+        for (var s of c.hull.points){
+          shape.lineTo(s.x, s.y);
+        }
+      }
+
+      /*console.log(c.linerity);
+      if (c.linerity>1){
+        var liner = new PIXI.Graphics();
+        liner.lineStyle(100, col, 1, 1);
+        liner.beginFill(col);
+        liner.drawRect(c.bbox_start.x, c.bbox_start.y, c.bbox_x_len, c.bbox_y_len);
+        liner.endFill();
+        update_objects.addChild(liner);
+      }*/
+
+      if (rf.box.flag){
+        reg_line.lineStyle(line_size, col, alpha);
+        reg_line.moveTo(c.bbox_start.x, c.regression_line.a*c.bbox_start.x+c.regression_line.b);
+        reg_line.lineTo(c.bbox_start.x+c.bbox_x_len, c.regression_line.a*(c.bbox_start.x+c.bbox_x_len)+c.regression_line.b);
+      }
     }
   }
-  facility.lineStyle(400, 0x00ff00, 400);
-  for (var f of facilities){
-    for (var p in f.entrances){
-      facility.moveTo(f.entrances[p][0][0], f.entrances[p][0][1]);
-      facility.lineTo(f.entrances[p][1][0], f.entrances[p][1][1]);
-    }
-  }
+
+    update_objects.addChild(bbox);
+    update_objects.addChild(shape);
+    update_objects.addChild(reg_line);
+    update_objects.addChild(history);
+    update_objects.addChild(velocity);
+    update_objects.addChild(center);
   
-  /*area.beginFill(0x0000ff);
-  area.drawRect(xmin - 1000/2, ymin - 1000/2, 1000, 1000);
-  area.drawRect(xmax - 1000/2, ymin - 1000/2, 1000, 1000);
-  area.drawRect(xmin - 1000/2, ymax - 1000/2, 1000, 1000);
-  area.drawRect(xmax - 1000/2, ymax - 1000/2, 1000, 1000);
-  area.endFill();*/
-
-  /*for (var i=1; i<json.length; i++){
-    var c;
-    if (display_sensor[0]){c = basic_sensor_color;} 
-    else {c = colors[i-1];}
-    c = colors[i-1];
-    sensor.lineStyle(100, 0xffffff, 1, 1);
-    sensor.beginFill(c);
-    sensor.drawRect(json[i].x - sensor_size/2, 
-		    json[i].y - sensor_size/2, 
-         	    sensor_size, sensor_size);
-    sensor.endFill();
-
-    now = new Date();
-    time = to_date(json[i].time);
-    lag  = now.getTime() - time.getTime();
-    lags[0] += lag;
-    lags[i] += lag;
-  }*/
+  
+    /**
+     * static objects
+     */
+    static_objects.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
+    static_objects.removeChildren();
+  
+    var area = new PIXI.Graphics();
+    static_objects.addChild(area);
+    area.clear();
+    area.lineStyle(100, 0xffffff, 100)
+        .moveTo(huamn_detect_area.area[huamn_detect_area.area.length-1][0], huamn_detect_area.area[huamn_detect_area.area.length-1][1]);
+    for (var p in huamn_detect_area.area){
+      area.lineTo(huamn_detect_area.area[p][0], huamn_detect_area.area[p][1]);
+    }
+  
+    var facility = new PIXI.Graphics();
+    static_objects.addChild(facility);
+    facility.clear();
+    facility.lineStyle(100, 0xffffff, 100);
+    for (var f of facilities){
+      facility.moveTo(f.area[f.area.length-1][0], f.area[f.area.length-1][1]);
+      for (var p in f.area){
+        facility.lineTo(f.area[p][0], f.area[p][1]);
+      }
+    }
+    facility.lineStyle(400, 0x00ff00, 400);
+    for (var f of facilities){
+      for (var p in f.entrances){
+        facility.moveTo(f.entrances[p][0][0], f.entrances[p][0][1]);
+        facility.lineTo(f.entrances[p][1][0], f.entrances[p][1][1]);
+      }
+    }
 
   fps_count++;
-
-  //drawing = now.getTime() - start.getTime();
-  //wait = (now.getTime() - pre_get_time.getTime()) - drawing;
-  //lag_display.text = 'Lag: ' + lag + 's';
-  //drawing_display.text = 'Drawing: ' + drawing + 'ms';
-  //wait_display.text = 'Wait: ' + wait + 'ms';
-
-  //displaying = false;
 }
-//});
 
-var lag_init = 0;
-var reconnect_lag = 10;
 
 function FpsDisplay(){
   /*if (lag_init==0){lag_init = Math.floor(lags[0]/(fps_count*sensor_n))/1000;}

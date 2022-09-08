@@ -10,10 +10,6 @@ import pkg from 'ws';
   const {Server} = pkg;
 import {readFileSync} from 'fs';
 import { ConsumerGroup, Consumer, KafkaClient } from 'kafka-node';
-/*const dateformat   = require('dateformat');
-const kafka        = require('kafka-node');
-const os	       = require('os');
-const logger       = require('log4js')*/
 
 // My libraries
 import {client}      from './mylib/client/client.mjs';
@@ -128,9 +124,11 @@ const raw_data_consumer =
 // remove_bg_data
 const remove_bg_data_consumer = 
   new consumer(kafka_servers, "remove_bg_data", topics.remove_bg_data, "wss-remove_bg_data")._consumer();
+  //new consumer(kafka_servers, "remove_bg_data", topics.aggregated_remove_bg_data, "wss-remove_bg_data")._consumer();
   remove_bg_data_consumer.on('connect', function(){ console.log(`Kafka: Connected remove_bg_data topics.`); });
   remove_bg_data_consumer.on('error', onError);
   remove_bg_data_consumer.on('message', onSensorData);
+  //remove_bg_data_consumer.on('message', onAggregatedSensorData);
 // integrated_remove_bg_data
 const integrated_remove_bg_data_consumer = 
   new consumer(kafka_servers, "integrated_remove_bg_data", topics.integrated_remove_bg_data, "wss-integrated_remove_bg_data")._consumer();
@@ -176,6 +174,22 @@ function onSensorData(message){
       code +=   "\"y\" : sensors[json.id]._y,";
       code +=   "\"direction\" : sensors[json.id]._direction,"
       code +=   "\"data\" : json.data }";
+  //console.log(code);
+  eval(code);
+};
+
+function onAggregatedSensorData(message){
+  var json = JSON.parse(message.value);
+  for (var j of json.data){
+    var code  = "send_remove_bg_data[j.id]={";
+        code +=   "\"time\" : j.time,";
+        code +=   "\"id\" : j.id,";
+        code +=   "\"x\" : 0,";
+        code +=   "\"y\" : 0,";
+        code +=   "\"direction\" : 0,"
+        code +=   "\"data\" : j.data }";
+    eval(code);
+  }
   //console.log(code);
   eval(code);
 };
