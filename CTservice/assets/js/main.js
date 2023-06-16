@@ -364,6 +364,8 @@ function display_sensor_data(json){
 
     now = new Date();
     time = to_date(json[i].time);
+    // console.log(now.getTime());
+    console.log(time.getTime());
     lag  = now.getTime() - time.getTime();
     lags[0] += lag;
     lags[i] += lag;

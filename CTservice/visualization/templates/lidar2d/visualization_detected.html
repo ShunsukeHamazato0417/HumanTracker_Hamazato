@@ -12,11 +12,14 @@
 
   <body>
     <div class="head-container">
-      <div class="head-title">visualization {{ title }}</div>
+      <div class="head-title">visualization {{ title }} hamazato</div>
       <div class="head-links">
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link2 }}">>{{ link2 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link2 }}">>{{ link2 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/camera/?ty={{ link4 }}">>{{ link4 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/multimodal/?ty={{ link5 }}">>{{ link5 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link6 }}">>{{ link6 }}</a></div>
       </div>
     </div>
     {% verbatim %}

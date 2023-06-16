@@ -1,0 +1,40 @@
+{% load static %}
+{% load render_bundle from webpack_loader  %}
+
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="{% static 'calibration/css/calibration.css' %}" />
+    <title>{{ title }}</title>
+  </head>
+
+  <body>
+    <div class="head-container">
+      <div class="head-title">visualization {{ title }} hamazato</div>
+      <div class="head-links">
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/multimodal/?ty={{ link2 }}">>{{ link2 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/camera/?ty={{ link4 }}">>{{ link4 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/multimodal/?ty={{ link5 }}">>{{ link5 }}</a></div>
+      </div>
+    </div>
+    {% verbatim %}
+    <!--<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.1.1/browser/pixi.min.js"></script>
+    <script defer src={% static 'visualization/js/lib/pixi/6.1.1/pixi.min.js' %}></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script defer src={% static 'visualization/js/test/display_class.js' %}></script>
+    <script defer src={% static 'visualization/js/test/raw_data.js' %}></script>-->
+    <div class="canvas-container">
+      <div class="canvas" id="canvas"></div>
+      <div class="canvas" id="info"></div>
+    </div>
+    {% endverbatim %}
+    
+    {% render_bundle 'main_provisional_multimodal' %}
+    
+  </body>
+</html>

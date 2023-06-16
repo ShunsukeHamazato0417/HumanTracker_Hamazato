@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'CTservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'CTservice',
-	'USER': 'endo',
-	'PASSWORD': 'sotaendo',
+        'NAME': 'CTservice2',
+	'USER': 'hamazato',
+	'PASSWORD': 'hamazato',
 	'HOST': 'localhost',
 	'PORT': '3306',
     }

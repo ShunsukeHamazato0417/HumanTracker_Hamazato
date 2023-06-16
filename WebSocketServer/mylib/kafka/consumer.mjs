@@ -32,7 +32,7 @@ export class consumer{
                 outOfRangeOffset: 'latest'
         }
 
-        return new ConsumerGroup(Object.assign({ id : 'wsserver-'+this._datatype }, this._option), this._topics);
+        return new ConsumerGroup(Object.assign({ id : 'wsserver-'+this._datatype}, this._option), this._topics);
     }
 
 }

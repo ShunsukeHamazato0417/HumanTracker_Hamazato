@@ -10,7 +10,7 @@ var now, data_t, lag;
 
 
 let domain = 'ws://192.168.50.12:';
-let port = '8081';
+let port = '8082';
 let ws_server;
 let ws;
 let ws_max_reconnect = 10;
@@ -58,7 +58,7 @@ function ws_connect(){
   };
 
   ws.onmessage = function(msg){
-    //console.log(msg.data);
+    // console.log(msg.data);
     var json = JSON.parse(msg.data);
     self.postMessage(json);
   };

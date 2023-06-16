@@ -318,7 +318,7 @@ for (var i=0; i<flags.length; i++){
 // データの受信時処理
 var display_json;
 worker.addEventListener('message', function(msg){
-  //console.log(msg.data);
+  console.log(msg.data);
   display_data(msg.data);
 }, false);
 

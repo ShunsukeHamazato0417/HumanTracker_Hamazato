@@ -1,7 +1,7 @@
 {
     "server": {
         "address": "192.168.50.12",
-        "port"   : 8081
+        "port"   : 8082
     },
     
     "kafka": {
@@ -31,7 +31,9 @@
             "integrated_remove_bg_data": ["integrated_remove_bg_data"],
             "aggregated_remove_bg_data": ["aggregated_remove_bg_data"],
             "dbscan_cluster_data": ["cluster_data"],
-            "detected_data": ["detected_data"]}
+            "detected_data": ["detected_data"],
+            "bytra": ["bytra"]
+            }
     },
 
     "sensor": {
@@ -103,5 +105,76 @@
                 "direction" : 180
             }
         ]
+    },
+    "camera": {
+        "num": 9,
+        "fps": 20,
+        "cameras": [
+            {
+                "id"        : 1,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 51800,
+                "y"         : 16680,
+                "direction" : 0
+            }, {
+                "id"        : 2,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50140,
+                "y"         : 13980,
+                "direction" : 180
+            }, {
+                "id"        : 3,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }, {
+                "id"        : 4,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 51800,
+                "y"         : 16680,
+                "direction" : 0
+            },{ 
+                "id"        : 5,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }, {
+                "id"        : 6,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }, {
+                "id"        : 7,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }, {
+                "id"        : 8,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }, {
+                "id"        : 9,
+                "ip"        : "0,0,0,0",
+                "camera_ip" : "0,0,0,0",
+                "x"         : 50660,
+                "y"         : 13980,
+                "direction" : 0
+            }
+        ]
     }
+
 }
