@@ -35,8 +35,8 @@ let window_h = window.innerHeight-60;
 
 
 /* ----- 描画領域の定義 -----*/
-let app_aspect_ratio = [4, 3];     // 可視化canvas(app)の縦横比
-let app_info_ratio   = [3, 1];     // appと情報canvas(info)の幅比
+let app_aspect_ratio = [2, 1];     // 可視化canvas(app)の縦横比
+let app_info_ratio   = [1, 1];     // appと情報canvas(info)の幅比
 
 // app, infoの大きさ定義
 let app_w, app_h, info_w, info_h;  
@@ -54,6 +54,7 @@ app_w = window_w;
 app_h  = window_h * (app_info_ratio[0]/(app_info_ratio[0]+app_info_ratio[1]));
 info_w = window_w;
 info_h = window_h * (app_info_ratio[1]/(app_info_ratio[0]+app_info_ratio[1]));
+// info_h = window_h;
 
 // app, infoの定義
 let app = new PIXI.Application({
@@ -75,11 +76,11 @@ info_canvas.appendChild(info.view);
 // appの背景描画
 let background = new PIXI.Container();
 let bg = new PIXI.Graphics()
-  .beginFill(0xffffff)
+  .beginFill(0x000000)
   .drawRect(0, 0, app_w, app_h)
   .endFill()
 app.stage.addChild(bg);
-let texture = PIXI.Texture.from('../../../media/new_floor_map20230516.png');
+let texture = PIXI.Texture.from('../../../media/new_floor_map.png');
 let bg_img = new PIXI.Sprite(texture);
 bg_img.alpha = 1.0
 app.stage.addChild(bg_img);

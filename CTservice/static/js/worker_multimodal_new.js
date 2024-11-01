@@ -130,14 +130,14 @@ function transformShareCordinate(json){
   var send = [];
 
   var data_tmp = [];
-  send.push(json[0]);
+  // send.push(json[0]);
   for (var i=0; i<json.length; i++){
     if(json[i]){
       for (var j=0; j<json[i].data.length; j++){
         var tmp = [0,0,0];
-        tmp[0] = json[i].data[j].x + 27380; //27380
-        tmp[1] = json[i].data[j].y + 3560;
-        tmp[2] = json[i].data[j].bytetrack_id;
+        tmp[0] = json[i].data[j].detects[json[i].data[j].detects.length-1].xy[0] + 27380;
+        tmp[1] = json[i].data[j].detects[json[i].data[j].detects.length-1].xy[1] + 3560;
+        tmp[2] = json[i].data[j].id;
         data_tmp.push(tmp);
       }
       var sensor_tmp = {
@@ -145,7 +145,7 @@ function transformShareCordinate(json){
         "x"         : json[i].x,
         "y"         : json[i].y,
         "det_time"  : json[i].det_time,
-        "data"      : data_tmp
+        "data"      : data_tmp,
       }
       send.push(sensor_tmp);
       // console.log(send);

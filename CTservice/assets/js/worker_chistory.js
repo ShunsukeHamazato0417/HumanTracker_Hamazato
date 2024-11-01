@@ -1,6 +1,5 @@
 'use strict'
 
-import { sensor } from "../../../WebSocketServer/mylib/tool/sensor.mjs";
 
 console.log('WebWorker activate.');
 
@@ -130,8 +129,8 @@ function transformShareCordinate(json){
     var data_tmp = [];
     for (var j=0; j<json.chistory[i].history.length; j++){
       var tmp = [0,0,0];
-      tmp[0] = json.chistory[i].history[j].x + 27380;
-      tmp[1] = json.chistory[i].history[j].y + 3560;
+      tmp[0] = json.chistory[i].history[j][0].xy[0] + 27380;
+      tmp[1] = json.chistory[i].history[j][0].xy[1] + 3560;
       tmp[2] = json.chistory[i].id;
       data_tmp.push(tmp);
     }
@@ -148,6 +147,7 @@ function transformShareCordinate(json){
     "det_time"  : json.time,
     "data"      : data_history
   }
+  // console.log(sensor_tmp);
   // send.push(sensor_tmp);
   // console.log(send);
  

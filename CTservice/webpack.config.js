@@ -22,6 +22,8 @@ module.exports = {
       worker_camera:  './assets/js/worker_camera.js',
       main_multimodal:    './assets/js/main_multimodal.js', 
       worker_mulitimodal:   './assets/js/worker_multimodal.js', 
+      main_multimodal_new:    './assets/js/main_multimodal_new.js', 
+      worker_mulitimodal_new:   './assets/js/worker_multimodal_new.js', 
       main_chistory:    './assets/js/main_chistory.js', 
       worker_chistory:  './assets/js/worker_chistory.js',
       main_history_multimodal:    './assets/js/main_history_multimodal.js', 
@@ -32,6 +34,8 @@ module.exports = {
       worker_provisional_detected:  './assets/js/worker_provisional_detected.js',
       main_provisional_multimodal:    './assets/js/main_provisional_multimodal.js', 
       worker_provisional_multimodal:  './assets/js/worker_provisional_multimodal.js',
+      main_mot:    './assets/js/main_mot.js', 
+      worker_mot:  './assets/js/worker_mot.js',
   },
 
   output: {

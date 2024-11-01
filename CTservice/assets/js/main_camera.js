@@ -36,21 +36,26 @@ let window_h = window.innerHeight-60;
 
 
 /* ----- 描画領域の定義 -----*/
-let app_aspect_ratio = [4, 3];     // 可視化canvas(app)の縦横比
-let app_info_ratio   = [3, 1];     // appと情報canvas(info)の幅比
+let app_aspect_ratio = [2, 1];     // 可視化canvas(app)の縦横比
+let app_info_ratio   = [1, 1];     // appと情報canvas(info)の幅比
 
 // app, infoの大きさ定義
 let app_w, app_h, info_w, info_h;  
-app_w  = window_w * (app_info_ratio[0]/(app_info_ratio[0]+app_info_ratio[1]));
-info_h = window_h;
-app_h  = window_h;
-if (app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]) > app_h){
-  app_w = app_h * (app_aspect_ratio[0]/app_aspect_ratio[1]);
-} else {
-  app_h = app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]);
-}
-info_w = window_w - app_w;
-if (info_w<540){info_w = 540;}
+// app_w  = window_w * (app_info_ratio[0]/(app_info_ratio[0]+app_info_ratio[1]));
+// info_h = window_h;
+// app_h  = window_h;
+// if (app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]) > app_h){
+//   app_w = app_h * (app_aspect_ratio[0]/app_aspect_ratio[1]);
+// } else {
+//   app_h = app_w * (app_aspect_ratio[1]/app_aspect_ratio[0]);
+// }
+// info_w = window_w - app_w;
+// if (info_w<540){info_w = 540;}
+app_w = window_w;
+app_h  = window_h * (app_info_ratio[0]/(app_info_ratio[0]+app_info_ratio[1]));
+info_w = window_w;
+info_h = window_h * (app_info_ratio[1]/(app_info_ratio[0]+app_info_ratio[1]));
+
 
 // app, infoの定義
 let app = new PIXI.Application({
@@ -79,7 +84,7 @@ let bg = new PIXI.Graphics()
   .drawRect(0, 0, app_w, app_h)
   .endFill()
 app.stage.addChild(bg);
-let texture = PIXI.Texture.from('../../../media/floormap_20210921.png');
+let texture = PIXI.Texture.from('../../../media/new_floor_map.png');
 let bg_img = new PIXI.Sprite(texture);
 bg_img.alpha = 0.5
 app.stage.addChild(bg_img);
@@ -297,7 +302,7 @@ for (var i=1; i<=sensor_n; i++){
 var display_json;
 worker.addEventListener('message', function(msg){
   if (!displaying){
-    console.log(msg.data);
+    // console.log(msg.data);
     //display_json = msg.data;
     //console.log('recieve');
     display_sensor_data(msg.data);
@@ -332,7 +337,7 @@ for (var i=0; i<=sensor_n; i++) { lags[i] = 0; }*/
 //app.ticker.maxFPS = 20;
 //app.ticker.add(() => {
 function display_sensor_data(json){
-  console.log(json[1]);
+  // console.log(json[1]);
   displaying = true;
   time_display.text = "Time: "+ json[1].det_time.year +"/" + json[1].det_time.mon + "/"+json[1].det_time.day+"  "+json[1].det_time.hour+":"+json[1].det_time.min+":"+json[1].det_time.sec+"."+json[1].det_time.misec;
   scaling_ratio = app_w / display_w;

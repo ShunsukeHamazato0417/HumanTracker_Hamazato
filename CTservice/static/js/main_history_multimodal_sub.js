@@ -7,7 +7,6 @@ if (!window.Worker){
 
 
 import * as PIXI from 'pixi.js';
-import { Graphics } from 'pixi.js';
 
 
 
@@ -472,6 +471,8 @@ var sensor = new PIXI.Graphics();
 app.stage.addChild(sensor);
 var data   = new PIXI.Graphics();
 app.stage.addChild(data);
+var region = new PIXI.Graphics();
+app.stage.addChild(region);
 
 var static_objects = new PIXI.Container();
 app.stage.addChild(static_objects);
@@ -765,11 +766,30 @@ function display_sensor_data(json){
   expantion_ratio = display_ratio * app_display_ratio * scaling_ratio;
   data.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
   sensor.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
+  region.setTransform(-display_min_x*scaling_ratio, -display_min_y*scaling_ratio, expantion_ratio, expantion_ratio);
   data_size   = 2  / expantion_ratio;
   sensor_size = 10 / expantion_ratio;
 
   sensor.clear();
   data.clear();
+  const camera_2_points = [
+    { x: 28880, y: 10707 },
+    { x: 28880, y: 16660 },
+    { x: 48180, y: 16660 },
+    { x: 48180, y: 10707 }
+  ];
+
+  const camera_3_points = [
+    { x: 56080, y: 10707 },
+    { x: 51700, y: 12069 },
+    { x: 51700, y: 16660 },
+    { x: 52180, y: 18360 },
+    { x: 52180, y: 28932 },
+    { x: 70480, y: 28932 },
+    { x: 70480, y: 16425 },
+    { x: 74046, y: 13566 },
+    { x: 70480, y: 10707 }
+  ];
   
   for (var i=0; i<json.data.length; i++){
     if(json.data[i]){
@@ -784,6 +804,35 @@ function display_sensor_data(json){
       }
     }
   }
+  // for(var i=0; i<camera_2_points.length;i++){
+  //   region.beginFill(0XCC3299);
+  //   region.drawRect(camera_2_points[i].x - data_size/2, 
+  //                 camera_2_points[i].y - data_size/2,
+  //       data_size*3, data_size*3)
+  //   region.endFill();
+  // }
+  
+  
+  // region.beginFill(0XCC3299)
+  region.lineStyle(2/expantion_ratio, 0XCC3299, 1); // 線の太さ、色、不透明度を設定
+  region.moveTo(camera_2_points[0].x, camera_2_points[0].y); // 最初の点に移動
+  // console.log(camera_2_points);
+  for (var i = 1; i < camera_2_points.length; i++) {
+    region.lineTo(camera_2_points[i].x, camera_2_points[i].y); // 次の点に直線を描く
+    // console.log("a")
+  }
+  region.lineTo(camera_2_points[0].x, camera_2_points[0].y); // 最後に最初の点に戻って閉じる
+  region.endFill();
+
+  region.lineStyle(2/expantion_ratio, 0XCC3299, 1); // 線の太さ、色、不透明度を設定
+  region.moveTo(camera_3_points[0].x, camera_3_points[0].y); // 最初の点に移動
+  // console.log(camera_3_points);
+  for (var i = 1; i < camera_3_points.length; i++) {
+    region.lineTo(camera_3_points[i].x, camera_3_points[i].y); // 次の点に直線を描く
+    // console.log("a")
+  }
+  region.lineTo(camera_3_points[0].x, camera_3_points[0].y); // 最後に最初の点に戻って閉じる
+  region.endFill();
 
   
     // for (var j=0; j<json.data.length; j += 1){
@@ -821,7 +870,7 @@ function display_sensor_data(json){
   }
   
 
-  fps_count++;
+  // fps_count++;
 
   //drawing = now.getTime() - start.getTime();
   //wait = (now.getTime() - pre_get_time.getTime()) - drawing;
@@ -904,6 +953,7 @@ function one_display_sensor_data(json,i){
       // lags[i] += lag;
     }
   }
+
   
 
   fps_count++;
@@ -952,6 +1002,26 @@ function display_multimodal_data(json){
       }
     }
   }
+
+  // var region = new PIXI.Graphics();
+  const camera_2_points = [
+    { x: 1500, y: 11947 },
+    { x: 1500, y: 8647 },
+    { x: 20420, y: 8647 },
+    { x: 20420, y: 11947 }
+  ];
+  // region.beginFill(0XCC3299)
+  region.lineStyle(10, 0XCC3299, 1); // 線の太さ、色、不透明度を設定
+  region.moveTo(camera_2_points[0].x, camera_2_points[0].y); // 最初の点に移動
+  console.log(camera_2_points);
+  for (var i = 1; i < camera_2_points.length; i++) {
+    region.lineTo(camera_2_points[i].x, camera_2_points[i].y); // 次の点に直線を描く
+    console.log("a")
+  }
+  region.lineTo(camera_2_points[0].x, camera_2_points[0].y); // 最後に最初の点に戻って閉じる
+  region.endFill();
+
+  // stage.addChild(region); // ステージに追加
 
   
     // for (var j=0; j<json.data.length; j += 1){

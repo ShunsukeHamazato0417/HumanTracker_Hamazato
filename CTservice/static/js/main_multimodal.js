@@ -339,43 +339,44 @@ worker.addEventListener('message', function(msg){
   var data_difference_y;
   var x;
   var y;
-  if(msg.data[0][1].data.length == 1){
-    var c_point = msg.data[0][1].data[0];
-    for(let i=0;i<msg.data[1].objects.length;i++){
-      if(msg.data[1].objects[i].status.current == 'moving'){
+  // if(msg.data[0][1].data.length == 1){
+  //   var c_point = msg.data[0][1].data[0];
+  //   for(let i=0;i<msg.data[1].objects.length;i++){
+  //     if(msg.data[1].objects[i].status.current == 'moving'){
 
-        var lidar_point = msg.data[1].objects[i].cluster;
-        var x_difference = c_point[0] - lidar_point.centroid.x;
-        var y_difference = c_point[1] - lidar_point.centroid.y;
+  //       var lidar_point = msg.data[1].objects[i].cluster;
+  //       var x_difference = c_point[0] - lidar_point.centroid.x;
+  //       var y_difference = c_point[1] - lidar_point.centroid.y;
         
-        var data_distance = Math.trunc(Math.sqrt( Math.pow( x_difference, 2 ) + Math.pow( y_difference, 2 )));
-        var lidar_data_camera_distance_x = lidar_point.centroid.x-msg.data[0][1].x;
-        var lidar_data_camera_distance_y = lidar_point.centroid.y-msg.data[0][1].y;
-        var lidar_data_camera_distance = Math.trunc(Math.sqrt( Math.pow( lidar_data_camera_distance_x, 2 ) + Math.pow( lidar_data_camera_distance_y, 2 )));
-        // console.log(data_distance);
-        if(min > data_distance){
-          min = data_distance;
-          camera_lidar_distance = lidar_data_camera_distance;
-          x = lidar_data_camera_distance_x;
-          y = lidar_data_camera_distance_y;
-          data_difference_x = Math.trunc(x_difference);
-          data_difference_y = Math.trunc(y_difference);
-        }
-      }
+  //       var data_distance = Math.trunc(Math.sqrt( Math.pow( x_difference, 2 ) + Math.pow( y_difference, 2 )));
+  //       var lidar_data_camera_distance_x = lidar_point.centroid.x-msg.data[0][1].x;
+  //       var lidar_data_camera_distance_y = lidar_point.centroid.y-msg.data[0][1].y;
+  //       var lidar_data_camera_distance = Math.trunc(Math.sqrt( Math.pow( lidar_data_camera_distance_x, 2 ) + Math.pow( lidar_data_camera_distance_y, 2 )));
+  //       // console.log(data_distance);
+  //       if(min > data_distance){
+  //         min = data_distance;
+  //         camera_lidar_distance = lidar_data_camera_distance;
+  //         x = lidar_data_camera_distance_x;
+  //         y = lidar_data_camera_distance_y;
+  //         data_difference_x = Math.trunc(x_difference);
+  //         data_difference_y = Math.trunc(y_difference);
+  //       }
+  //     }
       
-    }
-    // console.log("data_distance :" + min);
-    console.log("カメラと人の距離 :" + camera_lidar_distance);
-    console.log("x方向のずれ :" + data_difference_x);
-    console.log("y方向のずれ :" + data_difference_y);
+  //   }
+  //   // console.log("data_distance :" + min);
+  //   // console.log("カメラと人の距離 :" + camera_lidar_distance);
+  //   // console.log("x方向のずれ :" + data_difference_x);
+  //   // console.log("y方向のずれ :" + data_difference_y);
     
-    // console.log("カメラと人のx距離 :" + x);
-    // console.log("カメラと人のy距離 :" + y);
-  }
+  //   // console.log("カメラと人のx距離 :" + x);
+  //   // console.log("カメラと人のy距離 :" + y);
+  // }
   
-  
+  // console.log("LiDAR:" + msg.data[1])
+  // console.log("CAMERA:" + msg.data[0])
   display_data(msg.data[1]);
-  // console.log(msg.data[0]);
+  console.log(msg.data[0]);
   display_camera_data(msg.data[0])
 }, false);
 
@@ -769,10 +770,10 @@ function display_camera_data(json){
   sensor.clear();
   data.clear();
   
-  for (var i=1; i<json.length; i++){
+  for (var i=0; i<json.length; i++){
     for (var j=0; j<json[i].data.length; j += 1){
       if (json[i]){
-        var c = colors[json[i].data[j][2] % 9];///////////////////////////////////////
+        var c = colors[json[i].data[j][2] % 9];
 
         data.beginFill(c);
         data.drawRect(json[i].data[j][0] - data_size/2, 
@@ -780,6 +781,7 @@ function display_camera_data(json){
   		      data_size*2, data_size*2)
         data.endFill();
       }
+      console.log(i)
     }
   }
 

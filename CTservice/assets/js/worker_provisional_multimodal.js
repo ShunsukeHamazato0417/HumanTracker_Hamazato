@@ -136,14 +136,61 @@ function transformShareCordinate(json){
     // if(json[i]){
     var data_tmp = [];
     for (var j=0; j<json.chistory[i].history.length; j++){
-      var tmp = [0,0,0];
-      tmp[0] = json.chistory[i].history[j].x + 27580;
-      tmp[1] = json.chistory[i].history[j].y + 3560;
-      tmp[2] = json.chistory[i].id;
-      data_tmp.push(tmp);
+      var tmp = [0,0,0,0];
+      if(json.chistory[i].camera_num==2){
+        var x_error = (50130-(json.chistory[i].history[j][0].xy[0] + 27570)-1040)/20;
+        // if((50130-(json.chistory[i].history[j][0].xy[0] + 27570))<3000){
+        //   var y_error = (0.0415*(50130-(json.chistory[i].history[j][0].xy[0] + 27570))-230)*((14110-json.chistory[i].history[j][0].xy[1] + 3580)/1250);
+        // }else{
+        //   var y_error = 0;
+        // }
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570 - x_error;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        tmp[4] = json.chistory[i].history[j][0].bounding_box;
+        data_tmp.push(tmp);
+      }else if(json.chistory[i].camera_num==3){
+        var x_error = -(50660-(json.chistory[i].history[j][0].xy[0] + 27570)+2140)/15;
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570 + 400 - x_error;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        tmp[4] = json.chistory[i].history[j][0].bounding_box;
+        data_tmp.push(tmp);
+      }else{
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        tmp[4] = json.chistory[i].history[j][0].bounding_box;
+        data_tmp.push(tmp);
+      }
     }
     data_history.push(data_tmp);
   }
+
+  var distance;
+  for(let i=0;i<data_history.length;i++){
+    var camera_position;
+    if(data_history[0][0][3]==2){
+      camera_position=[50140, 13980]
+    }else if(data_history[0][0][3]==3){
+      camera_position=[50660, 13980]
+    }else if(data_history[0][0][3]==4){
+      camera_position=[79000, 10000]
+    }else{
+      camera_position=[73000, 31000]
+    }
+    for(let j=0;j<data_history[i].length;j++){
+      var camera_x = data_history[i][j][0];
+      var camera_y = data_history[i][j][1];
+      distance = Math.sqrt(Math.pow(camera_x-camera_position[0],2) + Math.pow(camera_y-camera_position[1],2));
+      // if(distance>)
+    }
+  }
+
+  // console.log(data_history);
   var sensor_tmp = {
     "det_time"  : json.time,
     "data"      : data_history,

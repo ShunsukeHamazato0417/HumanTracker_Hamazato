@@ -39,15 +39,18 @@ def camera(request):
   if 'ty' in request.GET:
       ty = request.GET.get(key="ty")
   else:
-      ty = 'camera_data'
+      ty = 'mot_data'
       
 
-  if ty=='camera_data':
-    context = { 'title': ty, 'link1': 'detected_data', 'link2': 'remove_bg_data', 'link3': 'dbscan_cluster_data','link4': 'raw_data','link5': 'history_multimodal_data'}
-    return render(request, 'camera/visualization_camera.html', context)
+  if ty=='mot_data':
+    context = { 'title': ty, 'link1': 'detected_data', 'link2': 'remove_bg_data', 'link3': 'mot_data','link4': 'raw_data','link5': 'history_multimodal_data'}
+    return render(request, 'camera/visualization_mot.html', context)
   elif ty=='camera_history_data':
-    context = { 'title': ty, 'link1': 'raw_data', 'link2': 'remove_bg_data', 'link3': 'dbscan_cluster_data','link4': 'camera_data','link5': 'history_multimodal_data'}
+    context = { 'title': ty, 'link1': 'raw_data', 'link2': 'camera_data', 'link3': 'dbscan_cluster_data','link4': 'camera_data','link5': 'history_multimodal_data'}
     return render(request, 'camera/visualization_chistory.html', context)
+  elif ty=='mot_data':
+    context = { 'title': ty, 'link1': 'raw_data', 'link2': 'remove_bg_data', 'link3': 'detected_data','link4': 'camera_data','link5': 'history_multimodal_data'}
+    return render(request, 'camera/visualization_mot.html', context)
   
   
 
@@ -61,6 +64,9 @@ def multimodal(request):
   if ty=='multimodal_data':
     context = { 'title': ty, 'link1': 'detected_data', 'link2': 'remove_bg_data', 'link3': 'history_multimodal_data','link4': 'raw_data','link5': 'camera_data'}
     return render(request, 'multimodal/visualization_multimodal.html', context)
+  elif ty=='multimodal_new_data':
+    context = { 'title': ty, 'link1': 'raw_data', 'link2': 'history_multimodal_data_sub', 'link3': 'detected_data','link4': 'camera_data','link5': 'multimodal_data'}
+    return render(request, 'multimodal/visualization_multimodal_new.html', context)
   elif ty=='history_multimodal_data':
     context = { 'title': ty, 'link1': 'raw_data', 'link2': 'history_multimodal_data_sub', 'link3': 'detected_data','link4': 'camera_data','link5': 'multimodal_data'}
     return render(request, 'multimodal/visualization_history_multimodal.html', context)

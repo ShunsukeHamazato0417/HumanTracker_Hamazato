@@ -16,7 +16,7 @@
       <div class="head-links">
         <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link1 }}">>{{ link1 }}</a></div>
         <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link2 }}">>{{ link2 }}</a></div>
-        <div class="head-link"><a href="http://192.168.50.12:81/lidar2d/?ty={{ link3 }}">>{{ link3 }}</a></div>
+        <div class="head-link"><a href="http://192.168.50.12:81/camera/?ty={{ link3 }}">>{{ link3 }}</a></div>
         <div class="head-link"><a href="http://192.168.50.12:81/camera/?ty={{ link4 }}">>{{ link4 }}</a></div>
         <div class="head-link"><a href="http://192.168.50.12:81/multimodal/?ty={{ link5 }}">>{{ link5 }}</a></div>
       </div>
@@ -30,6 +30,10 @@
     <script defer src={% static 'visualization/js/test/raw_data.js' %}></script>-->
     <div class="canvas-container">
       <div class="canvas" id="canvas"></div>
+      <!-- <div class="canvas" id="info"></div> -->
+    </div>
+    <div class="canvas-container">
+      <!-- <div class="canvas" id="canvas"></div> -->
       <div class="canvas" id="info"></div>
     </div>
     {% endverbatim %}

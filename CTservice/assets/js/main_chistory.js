@@ -294,7 +294,7 @@ for (var i=1; i<=sensor_n; i++){
 var display_json;
 worker.addEventListener('message', function(msg){
   if (!displaying){
-    console.log(msg.data);
+    // console.log(msg.data);
     //display_json = msg.data;
     //console.log('recieve');
     display_sensor_data(msg.data);

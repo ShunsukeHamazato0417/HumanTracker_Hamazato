@@ -128,7 +128,8 @@ function to_date (time){
 function transformShareCordinate(json){
 
   var send = [];
-
+  const degrees = 20;
+  const radians = degrees * (Math.PI / 180); // 度をラジアンに変換
   // var data_tmp = [];
   var data_history = [];
   // send.push(json);
@@ -137,10 +138,36 @@ function transformShareCordinate(json){
     var data_tmp = [];
     for (var j=0; j<json.chistory[i].history.length; j++){
       var tmp = [0,0,0];
-      tmp[0] = json.chistory[i].history[j].x + 27580;
-      tmp[1] = json.chistory[i].history[j].y + 3560;
-      tmp[2] = json.chistory[i].id;
-      data_tmp.push(tmp);
+      if(json.chistory[i].camera_num==2){
+        var x_error = (50130-(json.chistory[i].history[j][0].xy[0] + 27570)-1040)/20;
+        
+        // if((50130-(json.chistory[i].history[j][0].xy[0] + 27570))<4000 && (50130-(json.chistory[i].history[j][0].xy[0] + 27570))>2000){
+        //   var y_error = (0.0415*(50130-(json.chistory[i].history[j][0].xy[0] + 27570))-230)*((14110-json.chistory[i].history[j][0].xy[1] + 3580)/1250);
+        // }else{
+        //   var y_error = 0;
+        //   // console.log("1")
+        // }
+        
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570 - x_error;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        data_tmp.push(tmp);
+      }else if(json.chistory[i].camera_num==3){
+        var x_error = -(50660-(json.chistory[i].history[j][0].xy[0] + 27570)+2140)/15;
+        var y_error = x_error*Math.tan(radians);
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570 + 400 - x_error;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580 - y_error;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        data_tmp.push(tmp);
+      }else{
+        tmp[0] = json.chistory[i].history[j][0].xy[0] + 27570;
+        tmp[1] = json.chistory[i].history[j][0].xy[1] + 3580;
+        tmp[2] = json.chistory[i].id;
+        tmp[3] = json.chistory[i].camera_num;
+        data_tmp.push(tmp);
+      }
     }
     data_history.push(data_tmp);
   }
